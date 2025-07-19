@@ -1,0 +1,105 @@
+{% extends "nav.html" %}
+{% load static%}
+{% block title %} Index {% endblock title %}
+{% block css %}
+<style>
+    .product__cart__item__pic {
+        width: 30%;
+        height: auto;
+    }
+
+    .cart__close {
+        cursor: pointer;
+    }
+
+    .shopping__cart__table table tbody tr td.product__cart__item .product__cart__item__text {
+        overflow: hidden;
+        padding-top: 2px;
+    }
+</style>
+{% endblock css %}
+{% block body %}
+
+<!-- Shopping Cart Section Begin -->
+<section class="shopping-cart spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="shopping__cart__table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="wishlistItemsContainer"></tbody>
+
+                     <script>
+                        
+
+                            const wishlistItemsContainer = document.getElementById('wishlistItemsContainer');
+                            let wishlistItems = JSON.parse(localStorage.getItem('wishlist')) || [];
+
+                            console.log(wishlistItems);
+                            
+                            function removeItems(index) {
+                                wishlistItems.splice(index, 1);
+                                localStorage.setItem('wishlist', JSON.stringify(wishlistItems));
+                                renderCart();
+                            }
+
+                            function renderCart() {
+                                wishlistItemsContainer.innerHTML = '';
+                                let totalPrice = 0;
+
+                                if (wishlistItems.length > 0) {
+                                    wishlistItems.forEach((item, index) => {
+                                        const itemElement = document.createElement('tr');
+                                        itemElement.innerHTML =
+                                            `<td class="product__cart__item">
+                                                <div class="product__cart__item__pic">
+                                                    <img src="${item.image}" alt="">
+                                                </div>
+                                                <div class="product__cart__item__text">
+                                                    <h5>${item.name}</h5>
+                                                </div>
+                                            </td>
+                                            <td class="cart__price">$ ${item.price}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-secondary" style="background-color: black;">Add
+                                                    To Cart</button>
+                                            </td>
+                                            <td class="cart__close"><i class="fa fa-close" onclick="removeItems(${index})"></i></td>`
+
+                                            wishlistItemsContainer.appendChild(itemElement);
+                                            // totalPrice += item.price;
+                                            
+                                    });
+                                }else{
+                                    wishlistItemsContainer.textContent = 'Your wishlist is empty';
+                                }
+                            }
+
+                            renderCart();
+
+                        
+                        </script>
+                    </table>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="continue__btn">
+                            <a href="{% url 'shop' %}">Continue Shopping</a>
+                        </div>
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Shopping Cart Section End -->
+
+{% endblock%}
